@@ -1,0 +1,149 @@
+/* custom.css - Restaurant System Basic Package */
+
+/* General Styles */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Navbar Customization */
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* Card Enhancements */
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Menu Item Card */
+.menu-item-card {
+    height: 100%;
+}
+
+.menu-item-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.5em 1em;
+    border-radius: 20px;
+}
+
+/* Admin Dashboard Cards */
+.dashboard-card {
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+}
+
+.dashboard-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Form Styling */
+.form-control:focus {
+    box-shadow: none;
+    border-color: #80bdff;
+}
+
+/* Button Customization */
+.btn {
+    border-radius: 5px;
+    padding: 8px 20px;
+}
+
+/* Table Styling */
+.table th {
+    background-color: #f8f9fa;
+    border-top: none;
+}
+
+/* Cart Items */
+.cart-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+/* Payment Page */
+.qr-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* Login Page */
+.login-form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .card {
+        margin-bottom: 15px;
+    }
+}
+
+/* Button Sizes */
+.card .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+/* Gap Utility */
+.gap-2 {
+    gap: 0.5rem;
+}
+
+/* Flex Fill */
+.flex-fill {
+    flex: 1 1 auto;
+}
+
+/* Orange Theme Colors */
+:root {
+    --primary-orange: #ff6b35;
+    --secondary-orange: #ff9666;
+    --dark-orange: #cc4718;
+    --background-warm: #fff5f0;
+}
+
+/* Loading Spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 10px;
+}
+
+/* Modal Customization */
+.modal-content {
+    border-radius: 15px;
+}
+
+/* Image Placeholder */
+img[src*="default"] {
+    background-color: #f8f9fa;
+}
