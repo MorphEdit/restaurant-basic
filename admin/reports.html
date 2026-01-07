@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+        --primary-orange: #ff6b35;
+        --secondary-orange: #ff9666;
+        --dark-orange: #cc4718;
+        --background-warm: #fff5f0;
+        --text-dark: #2d3436;
+        --text-muted: #636e72;
+    }
+
+    body {
+        background-color: var(--background-warm);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .navbar {
+        background-color: var(--primary-orange) !important;
+        box-shadow: 0 2px 4px rgba(204, 71, 24, 0.2);
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+    .navbar-dark .navbar-nav .nav-link:hover {
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .navbar-dark .navbar-nav .nav-link.active {
+        color: #ffffff;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(204, 71, 24, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(204, 71, 24, 0.15);
+    }
+
+    .card-header {
+        background-color: rgba(255, 107, 53, 0.05);
+        border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-orange);
+        border-color: var(--primary-orange);
+        font-weight: 500;
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+    }
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: var(--dark-orange);
+        border-color: var(--dark-orange);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(204, 71, 24, 0.25);
+    }
+
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        border: 1px solid #ffe0d4;
+        padding: 0.625rem 1rem;
+        transition: all 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-orange);
+        box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.15);
+    }
+
+    .table {
+        background: white;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background-color: rgba(255, 107, 53, 0.05);
+        border-bottom: 2px solid rgba(255, 107, 53, 0.1);
+        color: var(--text-dark);
+    }
+
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+        border-radius: 0.375rem;
+    }
+
+    .bg-primary {
+        background-color: var(--primary-orange) !important;
+    }
+
+    .bg-success {
+        background-color: #2ecc71 !important;
+    }
+
+    .bg-warning {
+        background-color: #f1c40f !important;
+    }
+
+    .bg-info {
+        background-color: #3498db !important;
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">Restaurant Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/menu-management.html">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/table-management.html">Tables</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/order-management.html">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/reports.html">Reports</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Reports</h2>
+            <div>
+                <select class="form-select d-inline-block w-auto me-2" id="dateRange" onchange="loadReports()">
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Sales</h5>
+                        <h3 class="card-text" id="totalSales">฿0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Orders</h5>
+                        <h3 class="card-text" id="totalOrders">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Average Order Value</h5>
+                        <h3 class="card-text" id="avgOrderValue">฿0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Most Popular Item</h5>
+                        <h3 class="card-text" id="popularItem">-</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Selling Items -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Top Selling Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity Sold</th>
+                                        <th>Total Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topItemsTable">
+                                    <!-- Top items will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Orders</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" id="ordersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Table</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentOrders">
+                                    <!-- Recent orders will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        let currentReportData = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReports();
+        });
+
+        function loadReports() {
+            const dateRange = document.getElementById('dateRange').value;
+            
+            axios.get('../api/orders/order.php?action=list')
+                .then(response => {
+                    if (response.data.status === 'success') {
+                        const orders = response.data.data;
+                        const filteredOrders = filterOrdersByDateRange(orders, dateRange);
+                        
+                        currentReportData = calculateSummary(filteredOrders);
+                        
+                        updateDashboard(currentReportData);
+                        displayTopItems(currentReportData.topItems);
+                        displayRecentOrders(filteredOrders);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading reports');
+                });
+        }
+
+        function updateDashboard(data) {
+            document.getElementById('totalSales').textContent = `฿${data.totalSales.toLocaleString()}`;
+            document.getElementById('totalOrders').textContent = data.totalOrders;
+            document.getElementById('avgOrderValue').textContent = `฿${data.avgOrderValue.toFixed(2)}`;
+            document.getElementById('popularItem').textContent = data.popularItem;
+        }
+
+        function filterOrdersByDateRange(orders, range) {
+            const now = new Date();
+            const startDate = new Date();
+
+            switch(range) {
+                case 'today':
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case 'week':
+                    startDate.setDate(now.getDate() - 7);
+                    break;
+                case 'month':
+                    startDate.setMonth(now.getMonth() - 1);
+                    break;
+                case 'year':
+                    startDate.setFullYear(now.getFullYear() - 1);
+                    break;
+            }
+
+            return orders.filter(order => new Date(order.created_at) >= startDate);
+        }
+
+        function calculateSummary(orders) {
+            const totalSales = orders.reduce((sum, order) => sum + parseFloat(order.total_amount), 0);
+            const totalOrders = orders.length;
+            const avgOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
+            
+            const itemCount = {};
+            const itemRevenue = {};
+            
+            orders.forEach(order => {
+                order.items.forEach(item => {
+                    const itemName = item.menu_item_name;
+                    itemCount[itemName] = (itemCount[itemName] || 0) + item.quantity;
+                    itemRevenue[itemName] = (itemRevenue[itemName] || 0) + 
+                        (item.quantity * parseFloat(item.menu_item_price));
+                });
+            });
+
+            const popularItem = Object.entries(itemCount)
+                .sort(([,a], [,b]) => b - a)[0]?.[0] || '-';
+
+            const topItems = Object.entries(itemCount)
+                .map(([name, quantity]) => ({
+                    name,
+                    quantity,
+                    revenue: itemRevenue[name]
+                }))
+                .sort((a, b) => b.quantity - a.quantity)
+                .slice(0, 10);
+
+            return {
+                totalSales,
+                totalOrders,
+                avgOrderValue,
+                popularItem,
+                topItems
+            };
+        }
+
+        function displayTopItems(topItems) {
+            const tbody = document.getElementById('topItemsTable');
+            tbody.innerHTML = '';
+
+            topItems.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>฿${item.revenue.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            if (topItems.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center">No data available</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function displayRecentOrders(orders) {
+            const tbody = document.getElementById('recentOrders');
+            tbody.innerHTML = '';
+
+            orders.slice(0, 10).forEach(order => {
+                const items = order.items.map(item => item.menu_item_name).join(', ');
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${order.id}</td>
+                        <td>Table ${order.table_number}</td>
+                        <td>${items}</td>
+                        <td>฿${parseFloat(order.total_amount).toFixed(2)}</td>
+                        <td><span class="badge ${getStatusClass(order.status)}">${order.status}</span></td>
+                        <td>${formatDateTime(order.created_at)}</td>
+                    </tr>
+                `;
+            });
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center">No orders found</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'pending': return 'bg-warning';
+                case 'paid': return 'bg-info';
+                case 'served': return 'bg-success';
+                case 'cancelled': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+
+        function formatDateTime(datetime) {
+            return new Date(datetime).toLocaleString();
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

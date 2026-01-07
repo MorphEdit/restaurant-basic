@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Menu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .search-container input {
+            padding: 12px 40px;
+            border-radius: 15px;
+            border: 1px solid #dee2e6;
+            width: 100%;
+        }
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .menu-card:hover {
+            transform: translateY(-2px);
+        }
+        .menu-card img {
+            border-radius: 15px 15px 0 0;
+            height: 160px;
+            object-fit: cover;
+        }
+        .menu-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #212529;
+        }
+        .menu-price {
+            color: #fd7e14;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .add-to-cart-btn {
+            background-color: #fd7e14;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+        }
+        .add-to-cart-btn:hover {
+            background-color: #e76b08;
+        }
+        .cart-btn {
+            border-radius: 10px;
+            padding: 8px 16px;
+        }
+        .cart-badge {
+            background-color: #fd7e14;
+        }
+        .nav-pills .nav-link {
+            border-radius: 10px;
+            color: #6c757d;
+            padding: 8px 16px;
+            margin-right: 8px;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #fd7e14;
+            color: white;
+        }
+        .offcanvas {
+            border-radius: 15px 0 0 15px;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 4px;
+        }
+        .quantity-btn {
+            border: none;
+            background: none;
+            color: #6c757d;
+            padding: 4px 12px;
+        }
+        .quantity-input {
+            border: none;
+            background: none;
+            text-align: center;
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Restaurant Menu</a>
+            <button class="cart-btn btn btn-outline-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                <span class="position-relative">
+                    🛒 Cart
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill cart-badge" id="cartCount">
+                        0
+                    </span>
+                </span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search your favourite" class="form-control" id="searchInput" onkeyup="searchMenu()">
+        </div>
+
+        <div class="mb-4">
+            <h5>Table: <span id="tableNumber" class="text-muted">Loading...</span></h5>
+        </div>
+
+        <div class="scrolling-wrapper mb-4">
+            <ul class="nav nav-pills flex-nowrap" id="categoryTabs" style="overflow-x: auto;">
+            </ul>
+        </div>
+
+        <div class="row g-4" id="menuGrid">
+        </div>
+    </div>
+
+    <!-- Cart Offcanvas -->
+    <div class="offcanvas offcanvas-end" id="cartOffcanvas">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title">Your Order</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="cartItems" class="mb-4">
+            </div>
+            <div class="total-section rounded-3 p-3 mb-3" style="background-color: #fff8f3;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fs-5">Total Amount</span>
+                    <span class="fs-5 fw-bold" style="color: #fd7e14;">฿<span id="cartTotal">0</span></span>
+                </div>
+            </div>
+            <button class="btn w-100 mb-2" 
+                    style="background-color: #fd7e14; color: white; border-radius: 10px; padding: 12px;" 
+                    onclick="proceedToCheckout()">
+                Proceed to Checkout
+            </button>
+            <button class="btn btn-outline-secondary w-100" 
+                    style="border-radius: 10px; padding: 12px;" 
+                    data-bs-dismiss="offcanvas">
+                Continue Shopping
+            </button>
+        </div>
+    </div>
+
+    <!-- Item Detail Modal -->
+    <div class="modal fade" id="itemModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemName"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <img id="itemImage" src="" alt="" class="img-fluid rounded-3" style="max-height: 200px; object-fit: cover;">
+                    </div>
+                    <p id="itemDescription" class="text-muted"></p>
+                    <h4 class="menu-price mb-3">฿<span id="itemPrice"></span></h4>
+                    
+                    <div class="mb-3" id="addonsSection">
+                        <h6>Add-ons:</h6>
+                        <div id="addonsList" class="list-group list-group-flush">
+                        </div>
+                    </div>
+
+                    <div class="quantity-control d-inline-flex align-items-center mt-3">
+                        <button class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                        <input type="number" class="quantity-input" id="itemQuantity" value="1" min="1">
+                        <button class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn add-to-cart-btn text-white" onclick="addToCart()">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        let cart = [];
+        let currentItem = null;
+        let tableId = null;
+        let itemModal;
+        let allMenuItems = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            tableId = urlParams.get('table');
+            
+            if (!tableId) {
+                alert('Invalid table QR code');
+                return;
+            }
+
+            itemModal = new bootstrap.Modal(document.getElementById('itemModal'));
+            
+            loadTableInfo();
+            loadCategories();
+            loadMenuItems();
+            updateCartBadge();
+        });
+
+        function loadTableInfo() {
+            axios.get(`../api/tables/table.php?action=list`)
+                .then(response => {
+                    const table = response.data.data.find(t => t.id == tableId);
+                    if (table) {
+                        document.getElementById('tableNumber').textContent = table.table_number;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading table info:', error);
+                    document.getElementById('tableNumber').textContent = 'Error loading table';
+                });
+        }
+
+        function loadCategories() {
+            const tabs = document.getElementById('categoryTabs');
+            tabs.innerHTML = `
+                <li class="nav-item">
+                    <button class="nav-link active" onclick="filterByCategory('all')">
+                        All
+                    </button>
+                </li>
+            `;
+
+            axios.get('../api/menu/category.php?action=list')
+                .then(response => {
+                    const categories = response.data.data;
+                    categories.forEach(category => {
+                        tabs.innerHTML += `
+                            <li class="nav-item">
+                                <button class="nav-link" onclick="filterByCategory(${category.id})">
+                                    ${category.name}
+                                </button>
+                            </li>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading categories:', error);
+                });
+        }
+
+        function loadMenuItems() {
+            axios.get('../api/menu/menu.php?action=list')
+                .then(response => {
+                    allMenuItems = response.data.data;
+                    displayMenuItems(allMenuItems);
+                });
+        }
+
+        function displayMenuItems(items) {
+            const grid = document.getElementById('menuGrid');
+            grid.innerHTML = '';
+
+            items.forEach(item => {
+                if (item.status === 'available') {
+                    grid.innerHTML += `
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="card menu-card h-100">
+                                <img src="../assets/images/menu/${item.image || 'default.jpg'}" 
+                                     class="card-img-top" alt="${item.name}"
+                                     onerror="this.src='../assets/images/default-food.jpg'">
+                                <div class="card-body">
+                                    <h5 class="menu-title">${item.name}</h5>
+                                    <p class="menu-price mb-3">฿${item.price}</p>
+                                    <button class="btn add-to-cart-btn text-white w-100" 
+                                            onclick="showItemModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function searchMenu() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allMenuItems.filter(item => 
+                item.name.toLowerCase().includes(searchTerm) && item.status === 'available'
+            );
+            displayMenuItems(filtered);
+        }
+
+        function filterByCategory(categoryId) {
+            document.querySelectorAll('#categoryTabs .nav-link').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            let clickedButton;
+            if (event.target.tagName === 'BUTTON') {
+                clickedButton = event.target;
+            } else {
+                clickedButton = event.target.closest('.nav-link');
+            }
+            
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            }
+
+            axios.get('../api/menu/menu.php?action=list')
+                .then(response => {
+                    let items = response.data.data;
+                    if (categoryId !== 'all') {
+                        items = items.filter(item => item.category_id == categoryId);
+                    }
+                    displayMenuItems(items);
+                });
+        }
+
+        function showItemModal(item) {
+            currentItem = item;
+            document.getElementById('itemName').textContent = item.name;
+            document.getElementById('itemDescription').textContent = item.description || 'No description available';
+            document.getElementById('itemPrice').textContent = item.price;
+            document.getElementById('itemQuantity').value = 1;
+            document.getElementById('itemImage').src = `../assets/images/menu/${item.image || 'default.jpg'}`;
+
+            axios.get(`../api/menu/addon.php?action=list&menu_id=${item.id}`)
+                .then(response => {
+                    const addons = response.data.data;
+                    const addonsList = document.getElementById('addonsList');
+                    addonsList.innerHTML = '';
+                    
+                    if (addons.length > 0) {
+                        document.getElementById('addonsSection').style.display = 'block';
+                        addons.forEach(addon => {
+                            addonsList.innerHTML += `
+                                <div class="list-group-item border-0">
+                                    <div class="form-check d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" 
+                                                value="${addon.id}" id="addon_${addon.id}"
+                                                onchange="updateTotalPrice()">
+                                            <label class="form-check-label" for="addon_${addon.id}">
+                                                ${addon.name}
+                                            </label>
+                                        </div>
+                                        <span class="text-muted">+฿${addon.price}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        document.getElementById('addonsSection').style.display = 'none';
+                    }
+                });
+
+            itemModal.show();
+        }
+
+        function updateQuantity(change) {
+            const input = document.getElementById('itemQuantity');
+            const newValue = parseInt(input.value) + change;
+            if (newValue >= 1) {
+                input.value = newValue;
+                updateTotalPrice();
+            }
+        }
+
+        function updateTotalPrice() {
+            const basePrice = parseFloat(currentItem.price);
+            let addonTotal = 0;
+            
+            document.querySelectorAll('#addonsList input[type="checkbox"]:checked').forEach(checkbox => {
+                const priceText = checkbox.closest('.list-group-item').querySelector('.text-muted').textContent;
+                const price = parseFloat(priceText.replace('+฿', ''));
+                addonTotal += price;
+            });
+
+            const quantity = parseInt(document.getElementById('itemQuantity').value);
+            const total = (basePrice + addonTotal) * quantity;
+            
+            document.getElementById('itemPrice').textContent = total.toFixed(2);
+        }
+
+        function addToCart() {
+            const quantity = parseInt(document.getElementById('itemQuantity').value);
+            
+            const selectedAddons = [];
+            document.querySelectorAll('#addonsList input[type="checkbox"]:checked').forEach(checkbox => {
+                const addon = {
+                    id: checkbox.value,
+                    name: checkbox.nextElementSibling.textContent.trim(),
+                    price: parseFloat(checkbox.closest('.list-group-item').querySelector('.text-muted').textContent.replace('+฿', ''))
+                };
+                selectedAddons.push(addon);
+            });
+            
+            const basePrice = parseFloat(currentItem.price);
+            const addonTotal = selectedAddons.reduce((sum, addon) => sum + addon.price, 0);
+            const totalPrice = basePrice + addonTotal;
+
+            const cartItem = {
+                ...currentItem,
+                quantity: quantity,
+                addons: selectedAddons,
+                totalPrice: totalPrice
+            };
+
+            const existingItemIndex = cart.findIndex(i => {
+                if (i.id !== currentItem.id) return false;
+                
+                const existingAddonIds = i.addons.map(a => a.id).sort().join(',');
+                const newAddonIds = selectedAddons.map(a => a.id).sort().join(',');
+                return existingAddonIds === newAddonIds;
+            });
+
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                cart.push(cartItem);
+            }
+
+            updateCartBadge();
+            updateCartItems();
+            itemModal.hide();
+        }
+
+        function updateCartBadge() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        function updateCartItems() {
+            const cartDiv = document.getElementById('cartItems');
+            cartDiv.innerHTML = '';
+            
+            cart.forEach((item, index) => {
+                let addonHTML = '';
+                if (item.addons && item.addons.length > 0) {
+                    item.addons.forEach(addon => {
+                        addonHTML += `
+                            <div class="text-muted small">+ ${addon.name} (฿${addon.price})</div>
+                        `;
+                    });
+                }
+
+                cartDiv.innerHTML += `
+                    <div class="cart-item p-3 mb-2 bg-white rounded-3 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="fw-bold mb-1">${item.name}</h6>
+                                ${addonHTML}
+                                <div class="d-flex align-items-center mt-2">
+                                    <div class="quantity-control me-2" style="background-color: #f8f9fa; border-radius: 8px; padding: 4px 8px;">
+                                        <button class="btn btn-sm" style="color: #fd7e14;" onclick="updateCartItemQuantity(${index}, -1)">-</button>
+                                        <span class="mx-2">${item.quantity}</span>
+                                        <button class="btn btn-sm" style="color: #fd7e14;" onclick="updateCartItemQuantity(${index}, 1)">+</button>
+                                    </div>
+                                    <span style="color: #fd7e14;" class="fw-bold">฿${item.totalPrice.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm" style="color: #dc3545;" onclick="removeFromCart(${index})">×</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const total = cart.reduce((sum, item) => sum + (item.totalPrice * item.quantity), 0);
+            document.getElementById('cartTotal').textContent = total.toFixed(2);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            updateCartItems();
+        }
+
+        function updateCartItemQuantity(index, change) {
+            const newQuantity = cart[index].quantity + change;
+            if (newQuantity >= 1) {
+                cart[index].quantity = newQuantity;
+                updateCartItems();
+                updateCartBadge();
+            }
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty');
+                return;
+            }
+
+            sessionStorage.setItem('cart', JSON.stringify(cart));
+            sessionStorage.setItem('tableId', tableId);
+
+            window.location.href = 'cart.html';
+        }
+    </script>
+</body>
+</html>

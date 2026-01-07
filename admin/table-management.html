@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+        --primary-orange: #ff6b35;
+        --secondary-orange: #ff9666;
+        --dark-orange: #cc4718;
+        --background-warm: #fff5f0;
+        --text-dark: #2d3436;
+        --text-muted: #636e72;
+    }
+
+    body {
+        background-color: var(--background-warm);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .navbar {
+        background-color: var(--primary-orange) !important;
+        box-shadow: 0 2px 4px rgba(204, 71, 24, 0.2);
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+    .navbar-dark .navbar-nav .nav-link:hover {
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .navbar-dark .navbar-nav .nav-link.active {
+        color: #ffffff;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(204, 71, 24, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(204, 71, 24, 0.15);
+    }
+
+    .card-header {
+        background-color: rgba(255, 107, 53, 0.05);
+        border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-orange);
+        border-color: var(--primary-orange);
+        font-weight: 500;
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+    }
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: var(--dark-orange);
+        border-color: var(--dark-orange);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(204, 71, 24, 0.25);
+    }
+
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        border: 1px solid #ffe0d4;
+        padding: 0.625rem 1rem;
+        transition: all 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-orange);
+        box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.15);
+    }
+
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+        border-radius: 0.375rem;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        background-color: rgba(255, 107, 53, 0.05);
+        border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">Restaurant Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/menu-management.html">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/table-management.html">Tables</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/order-management.html">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/reports.html">Reports</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Table Management</h2>
+            <button class="btn btn-primary" onclick="openAddModal()">Add Table</button>
+        </div>
+
+        <!-- Tables Grid -->
+        <div class="row g-4" id="tablesGrid">
+            <!-- Tables will be loaded here -->
+        </div>
+
+        <!-- Add/Edit Modal -->
+        <div class="modal fade" id="tableModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">Add Table</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="tableForm">
+                            <input type="hidden" id="tableId">
+                            <div class="mb-3">
+                                <label class="form-label">Table Number</label>
+                                <input type="text" class="form-control" id="tableNumber" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-control" id="tableStatus">
+                                    <option value="available">Available</option>
+                                    <option value="occupied">Occupied</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="saveTable()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code Modal -->
+        <div class="modal fade" id="qrModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Table QR Code</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body d-flex flex-column align-items-center">
+                        <div id="qrCode" class="mb-3"></div>
+                        <button class="btn btn-primary" onclick="printQR()">Print QR Code</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        let tableModal;
+        let qrModal;
+        let currentEditId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            tableModal = new bootstrap.Modal(document.getElementById('tableModal'));
+            qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
+            loadTables();
+        });
+
+        function loadTables() {
+            axios.get('../api/tables/table.php?action=list')
+                .then(response => {
+                    const tables = response.data.data;
+                    const grid = document.getElementById('tablesGrid');
+                    grid.innerHTML = '';
+                    
+                    tables.forEach(table => {
+                        const statusClass = table.status === 'available' ? 'bg-success' : 'bg-danger';
+                        grid.innerHTML += `
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">Table ${table.table_number}</h5>
+                                        <p class="card-text">
+                                            <span class="badge ${statusClass}">${table.status}</span>
+                                        </p>
+                                        <div class="d-flex gap-2 mt-auto">
+                                            <button class="btn btn-sm btn-primary flex-fill" onclick="editTable(${table.id})">Edit</button>
+                                            <button class="btn btn-sm btn-danger flex-fill" onclick="deleteTable(${table.id})">Delete</button>
+                                            <button class="btn btn-sm btn-info flex-fill" onclick="showQR(${table.id})">Show QR</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(error => alert('Error loading tables'));
+        }
+
+        function openAddModal() {
+            currentEditId = null;
+            document.getElementById('tableForm').reset();
+            document.getElementById('modalTitle').textContent = 'Add Table';
+            tableModal.show();
+        }
+
+        function editTable(id) {
+            currentEditId = id;
+            document.getElementById('modalTitle').textContent = 'Edit Table';
+            
+            axios.get(`../api/tables/table.php?action=list`)
+                .then(response => {
+                    const table = response.data.data.find(t => t.id == id);
+                    if (table) {
+                        document.getElementById('tableNumber').value = table.table_number;
+                        document.getElementById('tableStatus').value = table.status;
+                        tableModal.show();
+                    }
+                })
+                .catch(error => alert('Error loading table'));
+        }
+
+        function saveTable() {
+            const formData = {
+                table_number: document.getElementById('tableNumber').value,
+                status: document.getElementById('tableStatus').value
+            };
+
+            const url = currentEditId ? 
+                '../api/tables/table.php?action=update' : 
+                '../api/tables/table.php?action=add';
+
+            if (currentEditId) {
+                formData.id = currentEditId;
+            }
+
+            axios.post(url, formData)
+                .then(response => {
+                    tableModal.hide();
+                    loadTables();
+                })
+                .catch(error => alert('Error saving table'));
+        }
+
+        function deleteTable(id) {
+            if (confirm('Are you sure you want to delete this table?')) {
+                axios.post('../api/tables/table.php?action=delete', { id: id })
+                    .then(response => {
+                        loadTables();
+                    })
+                    .catch(error => alert('Error deleting table'));
+            }
+        }
+
+        function showQR(id) {
+            const qrContainer = document.getElementById('qrCode');
+            qrContainer.innerHTML = '';
+            
+            const domain = window.location.origin;
+            const qrData = `${domain}/customer/menu.html?table=${id}`;
+            
+            new QRCode(qrContainer, {
+                text: qrData,
+                width: 256,
+                height: 256
+            });
+            
+            qrModal.show();
+        }
+
+        function printQR() {
+            const qrImage = document.getElementById('qrCode').querySelector('canvas');
+            const printWindow = window.open('', '', 'width=600,height=600');
+            printWindow.document.open();
+            printWindow.document.write('<html><head><title>Print QR Code</title></head><body>');
+            printWindow.document.write('<img src="' + qrImage.toDataURL() + '"/>');
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

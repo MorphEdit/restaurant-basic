@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff9666;
+            --dark-orange: #cc4718;
+            --background-warm: #fff5f0;
+            --text-dark: #2d3436;
+            --text-muted: #636e72;
+        }
+
+        body {
+            background-color: var(--background-warm);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-orange) !important;
+            box-shadow: 0 2px 4px rgba(204, 71, 24, 0.2);
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(204, 71, 24, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(204, 71, 24, 0.15);
+        }
+
+        .card-header {
+            background-color: rgba(255, 107, 53, 0.05);
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-orange);
+            border-color: var(--primary-orange);
+            font-weight: 500;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--dark-orange);
+            border-color: var(--dark-orange);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(204, 71, 24, 0.25);
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+            border: 1px solid #ffe0d4;
+            padding: 0.625rem 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.15);
+        }
+
+        .table {
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: rgba(255, 107, 53, 0.05);
+            border-bottom: 2px solid rgba(255, 107, 53, 0.1);
+            color: var(--text-dark);
+        }
+
+        .badge {
+            padding: 0.5em 0.75em;
+            font-weight: 500;
+            border-radius: 0.375rem;
+        }
+
+        .bg-primary {
+            background-color: var(--primary-orange) !important;
+        }
+
+        .bg-success {
+            background-color: #2ecc71 !important;
+        }
+
+        .bg-warning {
+            background-color: #f1c40f !important;
+        }
+
+        .bg-info {
+            background-color: #3498db !important;
+        }
+
+        .stats-card {
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stats-card .card-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-card .card-text {
+            color: white;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/admin/dashboard.html">Restaurant Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/menu-management.html">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/table-management.html">Tables</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/order-management.html">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/reports.html">Reports</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                            Admin
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="#" onclick="logout()">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dashboard</h2>
+            <div class="d-flex align-items-center">
+                <input type="date" class="form-control me-2" id="dateFilter">
+                <button class="btn btn-primary" onclick="loadDashboardData(document.getElementById('dateFilter').value)">
+                    Refresh
+                </button>
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Today's Sales</h5>
+                        <h3 class="card-text">฿<span id="todaySales">0</span></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Tables</h5>
+                        <h3 class="card-text" id="activeTables">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Orders</h5>
+                        <h3 class="card-text" id="pendingOrders">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Menu Items</h5>
+                        <h3 class="card-text" id="totalMenuItems">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders and Active Tables -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Recent Orders</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Table</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentOrdersTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Active Tables</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="activeTablesList">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const BASE_API_URL = '/api';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
+            initializePage();
+        });
+
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        function initializePage() {
+            const dateFilter = document.getElementById('dateFilter');
+            dateFilter.value = '';
+            loadDashboardData(null);
+        }
+
+        function loadDashboardData(selectedDate = null) {
+            const dateParam = selectedDate ? `date=${selectedDate}` : '';
+
+            Promise.all([
+                axios.get(`../api/orders/order.php?action=list${dateParam ? '&' + dateParam : ''}`),
+                axios.get('../api/tables/list.php'),
+                axios.get('../api/menu/list.php')
+            ]).then(([ordersRes, tablesRes, menuRes]) => {
+                if (ordersRes.data.status === 'success') {
+                    const orders = ordersRes.data.data;
+                    updateStats(orders);
+                    updateRecentOrders(orders);
+                }
+
+                if (tablesRes.data.status === 'success') {
+                    updateTablesList(tablesRes.data.data);
+                }
+
+                if (menuRes.data.status === 'success') {
+                    document.getElementById('totalMenuItems').textContent = menuRes.data.data.length;
+                }
+            }).catch(error => {
+                console.error('Error details:', error.response || error);
+                if (error.response?.status === 401) {
+                    window.location.href = 'index.html';
+                } else {
+                    alert('An error occurred while loading data. Please check the console for details.');
+                }
+            });
+        }
+
+        function updateStats(orders) {
+            const todaySales = orders.reduce((sum, order) => {
+                const amount = parseFloat(order.total_amount) || 0;
+                return sum + amount;
+            }, 0);
+            
+            document.getElementById('todaySales').textContent = 
+                todaySales.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            const pendingOrders = orders.filter(order => 
+                order.status === 'pending').length;
+            document.getElementById('pendingOrders').textContent = pendingOrders;
+        }
+
+        function updateRecentOrders(orders) {
+            const tableBody = document.getElementById('recentOrdersTable');
+            tableBody.innerHTML = '';
+
+            const sortedOrders = [...orders].sort((a, b) => 
+                new Date(b.created_at || Date.now()) - new Date(a.created_at || Date.now())
+            );
+
+            sortedOrders.forEach(order => {
+                const itemsList = order.items.map(item => 
+                    `${item.menu_item_name} x${item.quantity}`
+                ).join(', ');
+
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>#${order.id}</td>
+                        <td>Table ${order.table_number}</td>
+                        <td>${itemsList}</td>
+                        <td>฿${parseFloat(order.total_amount).toLocaleString(undefined, 
+                            {minimumFractionDigits: 2})}</td>
+                        <td><span class="badge ${getStatusClass(order.status)}">
+                            ${order.status}</span></td>
+                        <td>
+                            <a href="/admin/order-management.html?id=${order.id}" 
+                            class="btn btn-sm btn-primary">View</a>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            if (orders.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center">No orders found</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function updateTablesList(tables) {
+            const occupiedTables = tables.filter(table => 
+                table.status === 'occupied');
+            document.getElementById('activeTables').textContent = 
+                occupiedTables.length;
+
+            const tablesList = document.getElementById('activeTablesList');
+            tablesList.innerHTML = '';
+
+            occupiedTables.forEach(table => {
+                tablesList.innerHTML += `
+                    <div class="alert alert-info mb-2 d-flex justify-content-between align-items-center">
+                        <span>Table ${table.table_number}</span>
+                        <a href="/admin/order-management.html?table=${table.id}" 
+                           class="btn btn-sm btn-primary">View Orders</a>
+                    </div>
+                `;
+            });
+
+            if (occupiedTables.length === 0) {
+                tablesList.innerHTML = `
+                    <div class="text-center text-muted">
+                        No active tables
+                    </div>
+                `;
+            }
+        }
+
+        function getStatusClass(status) {
+            const statusClasses = {
+                'pending': 'bg-warning',
+                'paid': 'bg-info',
+                'served': 'bg-success',
+                'cancelled': 'bg-danger'
+            };
+            return statusClasses[status] || 'bg-secondary';
+        }
+    </script>
+</body>
+</html>

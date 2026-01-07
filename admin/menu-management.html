@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+        --primary-orange: #ff6b35;
+        --secondary-orange: #ff9666;
+        --dark-orange: #cc4718;
+        --background-warm: #fff5f0;
+        --text-dark: #2d3436;
+        --text-muted: #636e72;
+    }
+
+    body {
+        background-color: var(--background-warm);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .navbar {
+        background-color: var(--primary-orange) !important;
+        box-shadow: 0 2px 4px rgba(204, 71, 24, 0.2);
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+    .navbar-dark .navbar-nav .nav-link:hover {
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .navbar-dark .navbar-nav .nav-link.active {
+        color: #ffffff;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(204, 71, 24, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(204, 71, 24, 0.15);
+    }
+
+    .card-header {
+        background-color: rgba(255, 107, 53, 0.05);
+        border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-orange);
+        border-color: var(--primary-orange);
+        font-weight: 500;
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+    }
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: var(--dark-orange);
+        border-color: var(--dark-orange);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(204, 71, 24, 0.25);
+    }
+
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        border: 1px solid #ffe0d4;
+        padding: 0.625rem 1rem;
+        transition: all 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-orange);
+        box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.15);
+    }
+
+    .table {
+        background: white;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background-color: rgba(255, 107, 53, 0.05);
+        border-bottom: 2px solid rgba(255, 107, 53, 0.1);
+        color: var(--text-dark);
+    }
+
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+        border-radius: 0.375rem;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        background-color: rgba(255, 107, 53, 0.05);
+        border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">Restaurant Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/menu-management.html">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/table-management.html">Tables</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/order-management.html">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/reports.html">Reports</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Menu Management</h2>
+            <div>
+                <button class="btn btn-secondary me-2" onclick="openCategoryModal()">Manage Categories</button>
+                <button class="btn btn-primary" onclick="openAddModal()">Add Menu Item</button>
+            </div>
+        </div>
+        
+        <!-- Category Filter -->
+        <div class="mb-4">
+            <label class="form-label">Filter by Category:</label>
+            <select class="form-select" id="categoryFilter" onchange="filterMenuItems()">
+                <option value="all">All Categories</option>
+            </select>
+        </div>
+
+        <!-- Menu Items Table -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="menuTable">
+                    <!-- Data will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add/Edit Modal -->
+        <div class="modal fade" id="menuModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle">Add Menu Item</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="menuForm">
+                            <input type="hidden" id="menuId">
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" id="menuName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-control" id="menuCategory" required>
+                                    <!-- Categories will be loaded here -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="menuDescription"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Price</label>
+                                <input type="number" class="form-control" id="menuPrice" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Image</label>
+                                <input type="file" class="form-control" id="menuImage" accept="image/*">
+                                <div id="currentImage" class="mt-2"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-control" id="menuStatus">
+                                    <option value="available">Available</option>
+                                    <option value="unavailable">Unavailable</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Add-ons</label>
+                                <div id="addonsList">
+                                    <!-- Existing addons will be listed here -->
+                                </div>
+                                <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addNewAddon()">
+                                    + Add New Add-on
+                                </button>
+                            </div>
+                            
+                            <!-- Template for addon items -->
+                            <template id="addonTemplate">
+                                <div class="addon-item mb-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Add-on name" name="addon_name[]">
+                                        <input type="number" class="form-control" placeholder="Price" step="0.01" name="addon_price[]">
+                                        <button type="button" class="btn btn-outline-danger" onclick="removeAddon(this)">×</button>
+                                    </div>
+                                </div>
+                            </template>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="saveMenuItem()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Modal -->
+        <div class="modal fade" id="categoryModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Manage Categories</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="categoryForm" class="mb-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="newCategoryName" placeholder="New category name">
+                                <button type="button" class="btn btn-primary" onclick="addCategory()">Add Category</button>
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Category Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoryTable">
+                                    <!-- Categories will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        let menuModal;
+        let categoryModal;
+        let currentEditId = null;
+        let currentAddons = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            menuModal = new bootstrap.Modal(document.getElementById('menuModal'));
+            categoryModal = new bootstrap.Modal(document.getElementById('categoryModal'));
+            loadMenuItems();
+            loadCategories();
+        });
+
+        let allMenuItems = [];
+
+        function loadMenuItems() {
+            axios.get('../api/menu/menu.php?action=list')
+                .then(response => {
+                    allMenuItems = response.data.data;
+                    filterMenuItems();
+                })
+                .catch(error => alert('Error loading menu items'));
+        }
+
+        function filterMenuItems() {
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            const filteredItems = selectedCategory === 'all' 
+                ? allMenuItems 
+                : allMenuItems.filter(item => item.category_id == selectedCategory);
+            
+            const tableBody = document.getElementById('menuTable');
+            tableBody.innerHTML = '';
+            
+            filteredItems.forEach(item => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.category_name}</td>
+                        <td>${item.price}</td>
+                        <td>${item.status}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="editMenuItem(${item.id})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteMenuItem(${item.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function loadCategories() {
+            axios.get('../api/menu/category.php?action=list')
+                .then(response => {
+                    const categories = response.data.data;
+                    updateCategoryDropdown(categories);
+                    updateCategoryTable(categories);
+                })
+                .catch(error => alert('Error loading categories'));
+        }
+
+        function updateCategoryDropdown(categories) {
+            const categorySelect = document.getElementById('menuCategory');
+            categorySelect.innerHTML = '';
+            categories.forEach(category => {
+                categorySelect.innerHTML += `
+                    <option value="${category.id}">${category.name}</option>
+                `;
+            });
+            
+            const filterSelect = document.getElementById('categoryFilter');
+            filterSelect.innerHTML = '<option value="all">All Categories</option>';
+            categories.forEach(category => {
+                filterSelect.innerHTML += `
+                    <option value="${category.id}">${category.name}</option>
+                `;
+            });
+        }
+
+        function updateCategoryTable(categories) {
+            const categoryTable = document.getElementById('categoryTable');
+            categoryTable.innerHTML = '';
+            categories.forEach(category => {
+                categoryTable.innerHTML += `
+                    <tr>
+                        <td>${category.name}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteCategory(${category.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openCategoryModal() {
+            categoryModal.show();
+        }
+
+        function addCategory() {
+            const name = document.getElementById('newCategoryName').value;
+            if (!name) return;
+
+            axios.post('../api/menu/category.php?action=add', { name: name })
+                .then(response => {
+                    document.getElementById('newCategoryName').value = '';
+                    loadCategories();
+                })
+                .catch(error => alert('Error adding category'));
+        }
+
+        function deleteCategory(id) {
+            if (confirm('Are you sure you want to delete this category?')) {
+                axios.post('../api/menu/category.php?action=delete', { id: id })
+                    .then(response => {
+                        loadCategories();
+                        loadMenuItems();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error.response?.data || error);
+                        alert(error.response?.data?.message || 'Error deleting category');
+                    });
+            }
+        }
+
+        function addNewAddon() {
+            const template = document.getElementById('addonTemplate');
+            const addonsList = document.getElementById('addonsList');
+            const clone = template.content.cloneNode(true);
+            addonsList.appendChild(clone);
+        }
+
+        function removeAddon(button) {
+            button.closest('.addon-item').remove();
+        }
+
+        function loadAddons(menuItemId) {
+            axios.get(`../api/menu/addon.php?action=list&menu_id=${menuItemId}`)
+                .then(response => {
+                    currentAddons = response.data.data;
+                    const addonsList = document.getElementById('addonsList');
+                    addonsList.innerHTML = '';
+                    
+                    currentAddons.forEach(addon => {
+                        addNewAddon();
+                        const lastAddon = addonsList.lastElementChild;
+                        lastAddon.dataset.addonId = addon.id;
+                        lastAddon.querySelector('[name="addon_name[]"]').value = addon.name;
+                        lastAddon.querySelector('[name="addon_price[]"]').value = addon.price;
+                    });
+                })
+                .catch(error => console.error('Error loading addons:', error));
+        }
+
+        function openAddModal() {
+            currentEditId = null;
+            currentAddons = [];
+            document.getElementById('menuForm').reset();
+            document.getElementById('modalTitle').textContent = 'Add Menu Item';
+            document.getElementById('addonsList').innerHTML = '';
+            menuModal.show();
+        }
+
+        function editMenuItem(id) {
+            currentEditId = id;
+            document.getElementById('modalTitle').textContent = 'Edit Menu Item';
+            
+            const item = allMenuItems.find(i => i.id == id);
+            if (item) {
+                document.getElementById('menuName').value = item.name;
+                document.getElementById('menuCategory').value = item.category_id;
+                document.getElementById('menuDescription').value = item.description;
+                document.getElementById('menuPrice').value = item.price;
+                document.getElementById('menuStatus').value = item.status;
+                loadAddons(id);
+                menuModal.show();
+            }
+        }
+
+        function saveMenuItem() {
+            const formData = new FormData();
+            formData.append('name', document.getElementById('menuName').value);
+            formData.append('category_id', document.getElementById('menuCategory').value);
+            formData.append('description', document.getElementById('menuDescription').value);
+            formData.append('price', document.getElementById('menuPrice').value);
+            formData.append('status', document.getElementById('menuStatus').value);
+            
+            const imageFile = document.getElementById('menuImage').files[0];
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+
+            if (currentEditId) {
+                formData.append('id', currentEditId);
+            }
+
+            const url = currentEditId ? 
+                '../api/menu/menu.php?action=update' : 
+                '../api/menu/menu.php?action=add';
+
+            axios.post(url, formData)
+                .then(response => {
+                    const menuItemId = currentEditId || response.data.id;
+                    
+                    const addonItems = document.querySelectorAll('.addon-item');
+                    const remainingAddonIds = new Set();
+                    const promises = [];
+
+                    addonItems.forEach(item => {
+                        const nameInput = item.querySelector('[name="addon_name[]"]');
+                        const priceInput = item.querySelector('[name="addon_price[]"]');
+                        const addonId = item.dataset.addonId;
+                        
+                        if (nameInput.value && priceInput.value) {
+                            const addonData = {
+                                menu_item_id: menuItemId,
+                                name: nameInput.value,
+                                price: parseFloat(priceInput.value)
+                            };
+
+                            if (addonId) {
+                                remainingAddonIds.add(parseInt(addonId));
+                                addonData.id = addonId;
+                                promises.push(
+                                    axios.post('../api/menu/addon.php?action=update', addonData)
+                                );
+                            } else {
+                                promises.push(
+                                    axios.post('../api/menu/addon.php?action=add', addonData)
+                                );
+                            }
+                        }
+                    });
+
+                    const deletedAddons = currentAddons
+                        .filter(addon => !remainingAddonIds.has(addon.id))
+                        .map(addon => 
+                            axios.post('../api/menu/addon.php?action=delete', { id: addon.id })
+                        );
+
+                    promises.push(...deletedAddons);
+
+                    return Promise.all(promises);
+                })
+                .then(() => {
+                    menuModal.hide();
+                    document.getElementById('menuForm').reset();
+                    loadMenuItems();
+                })
+                .catch(error => {
+                    console.error('Error:', error.response?.data || error);
+                    alert(error.response?.data?.message || 'Error saving menu item');
+                });
+        }
+
+        function deleteMenuItem(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                axios.post('../api/menu/menu.php?action=delete', {
+                    id: id
+                })
+                .then(() => {
+                    loadMenuItems();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting menu item');
+                });
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
