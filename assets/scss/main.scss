@@ -1,0 +1,35 @@
+// ============================================
+// Main SCSS - Restaurant System
+// Entry point for all styles
+// ============================================
+
+// 1. Abstracts
+// ============================================
+@use 'abstracts/variables' as *;
+@use 'abstracts/mixins' as *;
+
+// 2. Base
+// ============================================
+@use 'base/reset';
+@use 'base/typography';
+
+// 3. Layout
+// ============================================
+@use 'layout/grid';
+@use 'layout/containers';
+
+// 4. Components
+// ============================================
+@use 'components/buttons';
+@use 'components/cards';
+@use 'components/forms';
+@use 'components/modals';
+@use 'components/navbar';
+@use 'components/badges';
+@use 'components/tables';
+
+// 5. Pages
+// ============================================
+@use 'pages/admin';
+@use 'pages/customer';
+@use 'pages/auth';

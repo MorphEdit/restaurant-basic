@@ -1,0 +1,138 @@
+// ============================================
+// Tables - Restaurant System
+// ============================================
+
+@use '../abstracts/variables' as *;
+
+// Base Table
+// ============================================
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: $text-dark;
+  vertical-align: top;
+  border-color: $gray-200;
+  background: $white;
+  border-radius: $border-radius;
+  overflow: hidden;
+  
+  > :not(caption) > * > * {
+    padding: 0.5rem 0.5rem;
+    background-color: transparent;
+    border-bottom-width: 1px;
+    box-shadow: inset 0 0 0 9999px transparent;
+  }
+}
+
+// Table Head
+// ============================================
+.table thead th {
+  background-color: rgba($primary-orange, 0.05);
+  border-bottom: 2px solid rgba($primary-orange, 0.1);
+  color: $text-dark;
+  border-top: none;
+  font-weight: $font-weight-medium;
+  vertical-align: bottom;
+}
+
+// Table Body
+// ============================================
+.table tbody {
+  tr {
+    transition: $transition-base;
+    
+    &:hover {
+      background-color: $gray-50;
+    }
+  }
+  
+  td {
+    vertical-align: middle;
+  }
+}
+
+// Table Striped
+// ============================================
+.table-striped {
+  > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: rgba(0, 0, 0, 0.02);
+    color: $text-dark;
+  }
+}
+
+// Table Responsive
+// ============================================
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  
+  > .table {
+    margin-bottom: 0;
+  }
+}
+
+// Table Cell Alignment
+// ============================================
+.text-end {
+  text-align: right !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-start {
+  text-align: left !important;
+}
+
+// Table Footer
+// ============================================
+.table tfoot {
+  border-top: 2px solid $gray-200;
+  
+  td {
+    font-weight: $font-weight-medium;
+    background-color: $gray-50;
+  }
+}
+
+// Custom Table Styles
+// ============================================
+
+// Orders Table
+#ordersTable,
+#recentOrdersTable {
+  th {
+    font-weight: $font-weight-medium;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+// Menu Table
+#menuTable {
+  tbody tr {
+    border-bottom: 1px solid $gray-100;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// Category Table
+#categoryTable {
+  tbody tr {
+    border-bottom: 1px solid $gray-100;
+  }
+}
+
+// Top Items Table
+#topItemsTable {
+  tbody tr {
+    &:first-child {
+      background-color: rgba($primary-orange, 0.05);
+    }
+  }
+}

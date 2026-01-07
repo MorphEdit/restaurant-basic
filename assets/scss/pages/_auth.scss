@@ -1,0 +1,226 @@
+// ============================================
+// Auth Pages - Restaurant System
+// ============================================
+
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// Login Page Layout
+// ============================================
+.login-form {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+// Login Page Body
+body {
+  &.bg-light {
+    background-color: $bg-light;
+  }
+}
+
+// Login Card
+.card {
+  border: none;
+  border-radius: $border-radius-xl;
+  box-shadow: 0 8px 20px rgba(204, 71, 24, 0.1);
+  background-color: $white;
+  transition: $transition-base;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(204, 71, 24, 0.15);
+  }
+}
+
+// Login Icon
+.login-icon {
+  font-size: 2.5rem;
+  color: $primary-orange;
+  margin-bottom: 1rem;
+}
+
+// Page Title
+.page-title {
+  color: #664d45;
+  font-weight: $font-weight-semibold;
+  margin-bottom: 1.5rem;
+}
+
+// Login Form Controls
+#loginForm {
+  .form-control {
+    border-radius: $border-radius;
+    border: 1px solid $gray-300;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    background-color: $white;
+    
+    &:focus {
+      border-color: $primary-orange;
+      box-shadow: 0 0 0 0.25rem rgba($primary-orange, 0.15);
+    }
+  }
+  
+  .form-label {
+    font-weight: $font-weight-medium;
+    color: #664d45;
+  }
+}
+
+// Error Message
+.error-message {
+  display: none;
+  color: $danger;
+  font-size: $font-size-sm;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  border-radius: $border-radius;
+  background-color: $bg-danger-light;
+  border: 1px solid #ffdddd;
+  @include fade-in;
+}
+
+// Login Button
+#loginForm button[type="submit"] {
+  @include button-primary;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .spinner-border {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: 0.5rem;
+    display: none;
+  }
+  
+  span {
+    transition: opacity 0.2s;
+  }
+  
+  &:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+}
+
+// Navbar on Login Page
+.navbar {
+  background-color: $primary-orange !important;
+  box-shadow: $shadow-sm;
+  
+  .navbar-brand {
+    @include navbar-brand;
+  }
+}
+
+// Center Content Vertically
+.justify-content-center {
+  &.align-items-center {
+    min-height: calc(100vh - 56px);
+  }
+}
+
+// Card Body
+.card-body {
+  padding: 2rem;
+  
+  &.p-4 {
+    padding: 2rem !important;
+  }
+}
+
+// Text Center
+.text-center {
+  text-align: center;
+  
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+// Input Focus Animation
+#loginForm {
+  input {
+    transition: $transition-base;
+    
+    &:focus {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Responsive Auth Layout
+// ============================================
+@media (max-width: $breakpoint-sm) {
+  .login-form {
+    margin: 20px auto;
+    padding: 10px;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+    
+    &.p-4 {
+      padding: 1.5rem !important;
+    }
+  }
+  
+  .login-icon {
+    font-size: 2rem;
+  }
+  
+  .page-title {
+    font-size: $font-size-xl;
+  }
+  
+  #loginForm {
+    .form-control {
+      padding: 0.625rem 0.875rem;
+      font-size: $font-size-sm;
+    }
+    
+    button[type="submit"] {
+      padding: 0.625rem 1.25rem;
+    }
+  }
+}
+
+// Welcome Page
+// ============================================
+.welcome-container {
+  min-height: calc(100vh - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  h1 {
+    color: $text-dark;
+    margin-bottom: 2rem;
+  }
+  
+  #loading {
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+      color: $primary-orange;
+    }
+    
+    p {
+      margin-top: 1rem;
+      color: $text-muted;
+    }
+  }
+  
+  #error {
+    &.alert-danger {
+      background-color: $bg-danger-light;
+      border-color: #ffdddd;
+      color: $danger;
+    }
+  }
+}

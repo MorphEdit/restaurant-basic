@@ -1,0 +1,222 @@
+// ============================================
+// Badges - Restaurant System
+// ============================================
+
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// Base Badge
+// ============================================
+.badge {
+  @include badge-base;
+  display: inline-block;
+  font-size: $font-size-sm;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+// Badge Colors
+// ============================================
+.bg-primary {
+  background-color: $primary-orange !important;
+  color: $white;
+}
+
+.bg-secondary {
+  background-color: $gray-600 !important;
+  color: $white;
+}
+
+.bg-success {
+  background-color: $success !important;
+  color: $white;
+}
+
+.bg-danger {
+  background-color: $danger !important;
+  color: $white;
+}
+
+.bg-warning {
+  background-color: $warning !important;
+  color: $text-dark;
+}
+
+.bg-info {
+  background-color: $info !important;
+  color: $white;
+}
+
+// Status Badges
+// ============================================
+.status-badge {
+  padding: 0.5em 1em;
+  border-radius: 20px;
+}
+
+// Cart Badge
+// ============================================
+.cart-badge {
+  background-color: $primary-orange;
+  color: $white;
+}
+
+// Badge Positioning
+// ============================================
+.position-relative {
+  position: relative !important;
+}
+
+.position-absolute {
+  position: absolute !important;
+}
+
+.top-0 {
+  top: 0 !important;
+}
+
+.start-100 {
+  left: 100% !important;
+}
+
+.translate-middle {
+  transform: translate(-50%, -50%) !important;
+}
+
+.rounded-pill {
+  border-radius: $border-radius-pill !important;
+}
+
+// Addon Tag (special badge for menu addons)
+// ============================================
+.addon-tag {
+  display: inline-block;
+  background-color: $bg-addon;
+  color: $primary-orange;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: $font-size-sm;
+  margin-top: 0.25rem;
+}
+
+// Status Icon
+// ============================================
+.status-icon {
+  width: 60px;
+  height: 60px;
+  background: $gray-50;
+  border-radius: $border-radius-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+// Status Step (for order tracking)
+// ============================================
+.status-step {
+  width: 40px;
+  height: 40px;
+  border-radius: $border-radius-pill;
+  background: $gray-50;
+  border: 2px solid $gray-200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: $transition-slow;
+  
+  &.active {
+    background: $primary-orange;
+    border-color: $primary-orange;
+    color: $white;
+  }
+}
+
+// Status Line (for order tracking)
+// ============================================
+.status-line {
+  height: 2px;
+  background: $gray-200;
+  flex: 1;
+  margin: 0 10px;
+  position: relative;
+  top: 20px;
+  
+  &.active {
+    background: $primary-orange;
+  }
+}
+
+// Alert
+// ============================================
+.alert {
+  position: relative;
+  padding: 1rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: $border-radius-lg;
+  
+  &.alert-info {
+    color: #084298;
+    background-color: #cfe2ff;
+    border-color: #b6d4fe;
+  }
+  
+  &.alert-success {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+  }
+  
+  &.alert-danger {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+  }
+  
+  &.alert-warning {
+    color: #664d03;
+    background-color: #fff3cd;
+    border-color: #ffecb5;
+  }
+}
+
+// Spinner (Loading)
+// ============================================
+.spinner-border {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: $border-radius-pill;
+  animation: spinner-border 0.75s linear infinite;
+  
+  &.text-primary {
+    color: $primary-orange;
+  }
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
